@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <wait.h>
+
+int main(void) {
+
+  // maybe a while loop that is indefininte while (1)
+  // get the line forever
+  // use fork to make new process
+  // use wait to wait for child process
+
+  char *line = NULL;
+  size_t size = 0;
+
+  while (1) {
+
+    printf("Enter programs to run\n");
+
+    getline(&line, &size, stdin);
+    //    printf("You typed %s", line);
+
+    pid_t pid = fork();
+
+    if (pid == 0) { // child
+      execlp(line, line, (char *)NULL);
+      perror("exel failure");
+
+    } else if (pid < 0) { // error
+      printf("ERROR\n");
+    } else { // parent, wait for child
+      waitpid(pid, NULL, 0);
+    }
+  }
+
+  return 0;
+}

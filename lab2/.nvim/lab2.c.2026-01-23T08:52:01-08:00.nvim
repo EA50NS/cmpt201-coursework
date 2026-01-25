@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <unistd.h>
+
+int main(void) {
+
+  // maybe a while loop that is indefininte while (1)
+  // get the line forever
+  // use fork to make new process
+  // use wait to wait for child process
+
+
+
+  while (1) {
+
+    char *line = NULL;
+    size_t size = 0;
+    size_t read;
+
+    printf("Enter programs to run\n");
+    read = getline(&line, &size, stdin);
+
+    printf("You typed %s\n", line);
+
+
+  }
+
+  return 0;
+}
