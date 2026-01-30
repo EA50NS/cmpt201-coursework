@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main(void) {
+
+  char *line = NULL;
+  size_t size = 0;
+  size_t read;
+
+  while (1) {
+    printf("Enter input: ");
+    read = getline(&line, &size, stdin);
+
+    
+    if (read == -1){
+      break;
+    }
+
+    if (line[read -1] == '\n'){
+      line[read - 1] = '\0';
+    }
+
+
+
+    printf("%s", line);
+  }
+
+  return 0;
+}

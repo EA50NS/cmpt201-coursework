@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main(void) {
+
+  char *line = NULL;
+  size_t size = 0;
+  size_t read;
+
+  while (1) {
+    printf("Enter input: ");
+    read = getline(&line, &size, stdin);
+
+    printf("%s", line);
+  }
+
+  return 0;
+}
