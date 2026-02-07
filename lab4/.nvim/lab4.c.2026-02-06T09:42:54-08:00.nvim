@@ -1,0 +1,51 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+struct header {
+  uint64_t size;
+  struct header *next;
+};
+
+void print_out(char *format, void *data, size_t data_size) {
+  char buf[64];
+  ssize_t len = snprintf(buf, 64, format,
+                         data_size == sizeof(uint64_t) ? (uint64_t *)data
+                                                       : *(void **)data);
+  //  if (len < 0) {
+  //   handle_error("snprintf");
+  // }
+  write(STDOUT_FILENO, buf, len);
+}
+
+int main(void) {
+
+  void *current_Memory = sbrk(0);
+  // printf("Current: %p\n", current_Memory);
+
+  void *heap_start = sbrk(256);
+  if (heap_start == (void *)-1) {
+    perror("sbrk FAIL");
+    return 1;
+  }
+
+  uint64_t block_Size = 128;
+
+  struct header *block1 = (struct header *)heap_start;
+  struct header *block2 = (struct header *)(heap_start + block_Size);
+
+  block1->size = block_Size;
+  block2->size = block_Size;
+  block1->next = NULL;
+  block2->next = block1;
+  memset(block1 + 1, 1, 128 - sizeof(struct header));
+  memset(block2 + 1, 0, 128 - sizeof(struct header));
+
+  print_out("first block:    %p\n", &block1, sizeof(block1));
+  print_out("second block:   %p\n", &block2, sizeof(block2));
+
+  // printf("New size: %p\n", new_Memory);
+
+  return 0;
+}

@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <unistd.h>
+
+int main(void) {
+
+  void *current_Memory = sbrk(0);
+  printf("Current: %p\n", current_Memory);
+
+  void *new_Memory = sbrk(265);
+
+  if (new_Memory == (void *)-1){
+    perror("sbrk FAIL");
+    return 1;
+  }
+
+  return 0;
+}

@@ -1,0 +1,10 @@
+#include <unistd.h>
+#include <stdio.h>
+
+int main(void){
+ 
+  void *current_Memory = sbrk(0);
+  printf("Current: %p\n", current_Memory);
+
+  return 0;
+}
