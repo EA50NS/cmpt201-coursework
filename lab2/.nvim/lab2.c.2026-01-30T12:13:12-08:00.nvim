@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <wait.h>
+
+int main(void) {
+
+  // maybe a while loop that is indefininte while (1)
+  // get the line forever
+  // use fork to make new process
+  // use wait to wait for child process
+
+  char *line = NULL;
+  size_t size = 0;
+  size_t read;
+
+  while (1) {
+
+    printf("Enter programs to run.\n");
+
+    read = getline(&line, &size, stdin);
+    // printf("You typed %s", line);
+
+    if (read == -1) {
+      break;
+    }
+
+    // remove trailing new line
+    if (line[read - 1] == '\n') {
+      line[read - 1] = '\0';
+    }
+
+    pid_t pid = fork();
+
+    if (pid == 0) { // child
+      execl(line, line, (char *)NULL);
+      perror("Exec failure"); // execl only returns when error, so this line
+                              // will only display when error.
+
+    }
+
+    else if (pid < 0) { // error
+      printf("ERROR\n");
+    }
+
+    else { // parent, wait for child
+      waitpid(pid, NULL, 0);
+    }
+  }
+
+  free(line);
+
+  return 0;
+}
