@@ -12,22 +12,19 @@
 /*
 Questions to answer at top of client.c:
 (You should not need to change the code in client.c)
-1. What is the address of the server it is trying to connect to (IP address and
-port number). The address of the server is 127.0.0.1 and the the port number is
-8000.
+1. What is the address of the server it is trying to connect to (IP address and port number).
+  The address of the server is 127.0.0.1 and the the port number is 8000.
 
 2. Is it UDP or TCP? How do you know?
-  It is TCP. The socket function has the parameter SOCK_STREAM which indicates
-TCP.
+  It is TCP. The socket function has the parameter SOCK_STREAM which indicates TCP.
 
-3. The client is going to send some data to the server. Where does it get this
-data from? How can you tell in the code? The client sends the data through input
-from the user. I can tell as the server listens for a client and then read()
-what the client write()s;
+3. The client is going to send some data to the server. Where does it get this data from? How can you tell in the code?
+  The client sends the data through input from the user. I can tell as the server listens for a
+  client and then read() what the client write()s;
 
 4. How does the client program end? How can you tell that in the code?
-  The client program ends when the number of bytes written is less than one, in
-which then it will close the socket.
+  The client program ends when the number of bytes written is less than one, in which then it will
+  close the socket.
 */
 
 #define handle_error(msg)                                                      \
