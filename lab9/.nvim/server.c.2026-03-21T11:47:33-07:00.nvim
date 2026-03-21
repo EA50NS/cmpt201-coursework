@@ -38,7 +38,7 @@ void *handle_client(void *arg) {
   ssize_t bytesRead;
 
   // this while loop will read from client forever until they disconnect
-  while ((bytesRead = read(client->cfd, buf, BUF_SIZE - 1)) > 0) {
+  while ((bytesRead = read(client->cfd, buf, BUF_SIZE-1)) > 0){
     // add null to end of string
     buf[bytesRead - 1] = '\0';
 
@@ -48,7 +48,7 @@ void *handle_client(void *arg) {
     total_message_count++;
     pthread_mutex_unlock(&count_mutex);
   }
-
+  
   printf("Client %d disconnected\n", client->client_id);
   close(client->cfd);
   free(client);
@@ -79,15 +79,14 @@ int main() {
   }
 
   for (;;) {
-    struct client_info *client =
-        (struct client_info *)malloc(sizeof(struct client_info));
-    if (client == NULL) {
+    struct client_info *client = (struct client_info*) malloc(sizeof(struct client_info));
+    if (client == NULL){
       perror("malloc");
       continue;
     }
 
     client->cfd = accept(sfd, NULL, NULL);
-    if (client->cfd == -1) {
+    if(client->cfd == -1){
       free(client);
       perror("accept");
       continue;
@@ -98,13 +97,14 @@ int main() {
     pthread_mutex_unlock(&client_id_mutex);
 
     pthread_t threadID;
-    if (pthread_create(&threadID, NULL, handle_client, client) != 0) {
+    if (pthread_create(&threadID, NULL, handle_client, client) != 0){
       free(client);
       perror("pthread_create");
       continue;
-    }
+    }       
 
     pthread_detach(threadID);
+
   }
 
   if (close(sfd) == -1) {
