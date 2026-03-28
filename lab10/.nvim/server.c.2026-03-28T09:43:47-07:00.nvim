@@ -207,7 +207,7 @@ static void *run_acceptor(void *args) {
   // Shutdown and cleanup
   for (int i = 0; i < num_clients; i++) {
     client_args[i].run = false;
-    pthread_join(threads[i], NULL);
+    pthread_join(threads[i], NULL); 
   }
 
   if (close(sfd) == -1) {
