@@ -65,7 +65,15 @@ int main() {
   // TODO: Load the public key using PEM_read_PUBKEY
   // TODO: CHECK ERROR FOR FUNCTION CALL
   FILE *pub_key_FD = fopen("public_key.pem", "r");
+  if (!pub_key_FD) {
+    handle_error("Error reading public key file");
+  }
+
   EVP_PKEY *pubkey = PEM_read_PUBKEY(pub_key_FD, NULL, NULL, NULL);
+  if (!pubkey) {
+    handle_error("Error reading public key");
+  }
+  fclose(pub_key_FD);
 
   // Verify each message
   for (int i = 0; i < 3; i++) {
@@ -105,14 +113,32 @@ int verify(const char *message_path, const char *sign_path, EVP_PKEY *pubkey) {
   // TODO: Check if the message is authentic using the signature.
   // Look at: https://wiki.openssl.org/index.php/EVP_Signing_and_Verifying
 
-  memcpy(message, &message_path, sizeof(message_path));
-  memcpy(signature, &sign_path, sizeof(sign_path));
+  size_t message_len = read_all_bytes(message_path, message, MAX_FILE_SIZE);
+  size_t signature_len = read_all_bytes(sign_path, signature, MAX_FILE_SIZE);
 
   EVP_MD_CTX *ctx = EVP_MD_CTX_new();
-  EVP_DigestVerifyInit(ctx, NULL, EVP_sha256(), NULL, pubkey);
-  EVP_DigestVerifyUpdate(ctx, message, sizeof(message));
-  if (1 == EVP_DigestVerifyFinal(ctx, signature, sizeof(signature))) {
+  if (!ctx) {
+    return -1;
+  }
+
+  if (EVP_DigestVerifyInit(ctx, NULL, EVP_sha256(), NULL, pubkey) != 1) {
+    EVP_MD_CTX_free(ctx);
+    return -1;
+  }
+
+  if (EVP_DigestVerifyUpdate(ctx, message, message_len) != 1) {
+    EVP_MD_CTX_free(ctx);
+    return -1;
+  }
+
+  int ret = EVP_DigestVerifyFinal(ctx, signature, signature_len - 1);
+
+  if (ret == 1) {
+    EVP_MD_CTX_free(ctx);
     return 1;
+  } else if (ret == 0) {
+    EVP_MD_CTX_free(ctx);
+    return 0;
   } else {
     return -1;
   }
